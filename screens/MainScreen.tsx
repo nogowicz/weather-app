@@ -131,7 +131,9 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                     <View style={styles.detailsContainer}>
                         <View style={styles.detailContainerColumn}>
                             <WeatherDetail title='Feels like' detail={feelsLike}>
-                                <FontAwesome5 name="temperature-low" size={24} color="black" />
+                                {parseInt(temperature) > 20 ?
+                                    <FontAwesome5 name="temperature-high" size={20} color="black" /> :
+                                    <FontAwesome5 name="temperature-low" size={20} color="black" />}
                             </WeatherDetail>
                             <WeatherDetail title='Precipitation' detail={rain + '%'}>
                                 <Ionicons name="umbrella-outline" size={24} color="black" />
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 30,
+        marginTop: 30,
     },
     detailContainerColumn: {
         marginHorizontal: 30,

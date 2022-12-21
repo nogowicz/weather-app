@@ -14,12 +14,12 @@ import {
 import { locations } from './data/locations';
 import { useRef } from 'react';
 
-
+type Icon = keyof typeof Ionicons.glyphMap;
 
 export default function App() {
   let img = require('./assets/sunnyDay.png');
   let background = '#CFDBBA'
-  let weatherIcon: keyof typeof Ionicons.glyphMap = "md-sunny-outline"
+  let weatherIcon: Icon = "md-sunny-outline"
 
 
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -53,6 +53,14 @@ export default function App() {
             img = require('./assets/rainyDay.png');
             background = '#82B1D8'
             weatherIcon = "rainy-outline"
+          } else if (location.weatherType === 'Snowy') {
+            img = require('./assets/snowyDay.png')
+            background = '#B8E8FC'
+            weatherIcon = "md-snow-outline"
+          } else if (location.weatherType === 'Stormy') {
+            img = require('./assets/stormyDay.png')
+            background = '#B1AFFF'
+            weatherIcon = "md-thunderstorm-outline"
           }
 
           return (
@@ -120,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     bottom: '33%',
-    right: (windowWidth / 2) - 25,
+    right: (windowWidth / 2) - locations.length * 7,
 
   },
 });

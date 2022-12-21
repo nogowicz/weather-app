@@ -1,15 +1,16 @@
 export const locations = [
     {
       id: 1,
-      city: 'Kolkata',
+      city: 'Lublin',
       dateTime: 'Today 20 Dec 07:50',
-      temperature: '27\u2103',
-      weatherType: 'Sunny',
+      temperature: '1\u2103',
+      weatherType: 'Snowy',
       wind: 14,
       rain: 50,
       humidity: 70,
-      feelsLike: '30\u2103'
+      feelsLike: '-1\u2103'
     },
+    
     {
       id: 2,
       city: 'London',
@@ -42,5 +43,27 @@ export const locations = [
       rain: 70,
       humidity: 91,
       feelsLike: '17\u2103'
-    }
+    },
+    {
+      id: 5,
+      city: 'Kolkata',
+      dateTime: 'Today 20 Dec 07:50',
+      temperature: '27\u2103',
+      weatherType: 'Sunny',
+      wind: 14,
+      rain: 50,
+      humidity: 70,
+      feelsLike: '30\u2103'
+    },
+    {
+      id: 6,
+      city: 'Przemyśl',
+      dateTime: 'Today 20 Dec 07:50',
+      temperature: '15\u2103',
+      weatherType: 'Stormy',
+      wind: 8,
+      rain: 7,
+      humidity: 82,
+      feelsLike: '13\u2103'
+    },
   ];
