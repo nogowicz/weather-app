@@ -6,13 +6,13 @@ import {
     Image,
     Dimensions,
 } from 'react-native';
-import { useFonts } from 'expo-font';
-import {
-    Lato_900Black,
-    Lato_400Regular,
-    Lato_700Bold
-} from '@expo-google-fonts/lato'
-import AppLoading from 'expo-app-loading';
+// import { useFonts } from 'expo-font';
+// import {
+//     Lato_900Black,
+//     Lato_400Regular,
+//     Lato_700Bold
+// } from '@expo-google-fonts/lato'
+// import AppLoading from 'expo-app-loading';
 import {
     AntDesign,
     MaterialCommunityIcons,
@@ -21,6 +21,11 @@ import {
     Feather,
 } from '@expo/vector-icons';
 import WeatherDetail from '../components/WeatherDetail';
+import React from 'react';
+import { Pressable } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Props = {
     id: number,
@@ -30,22 +35,23 @@ type Props = {
     temperature: string,
     weatherType: string,
     wind: number,
-    rain: number,
+    visibility: number,
     humidity: number,
     feelsLike: string,
     background: string,
     weatherIcon: keyof typeof Ionicons.glyphMap
 };
 
-function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind, rain, humidity, feelsLike, background, weatherIcon }: Props) {
-    let [fontsLoaded] = useFonts({
-        "Lato-Bold900": Lato_900Black,
-        "Lato-Regular400": Lato_400Regular,
-        "Lato-Bold700": Lato_700Bold
-    })
-    if (!fontsLoaded) {
-        return <AppLoading />
-    }
+function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind, visibility, humidity, feelsLike, background, weatherIcon }: Props) {
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
+    // let [fontsLoaded] = useFonts({
+    //     "Lato-Bold900": Lato_900Black,
+    //     "Lato-Regular400": Lato_400Regular,
+    //     "Lato-Bold700": Lato_700Bold
+    // })
+    // if (!fontsLoaded) {
+    //     // return <AppLoading />
+    // }
 
 
     return (
@@ -54,12 +60,12 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                 <View style={styles.topBar}>
                     <View>
                         <Text style={{
-                            fontFamily: "Lato-Bold900",
+                            // fontFamily: "Lato-Bold900",
                             fontSize: 20,
                             color: '#1C212F'
                         }}>{city}</Text>
                         <Text style={{
-                            fontFamily: "Lato-Regular400",
+                            // fontFamily: "Lato-Regular400",
                             fontSize: 15,
                             marginTop: 5,
                             color: '#1C212F'
@@ -68,27 +74,55 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                     <View style={{
                         flexDirection: 'row',
                     }}>
-                        <AntDesign
-                            name="plus"
-                            size={24}
-                            color='#1C212F'
-                        />
-                        <MaterialCommunityIcons
-                            name="sort-variant"
-                            size={24}
-                            color='#1C212F'
-                            style={{
-                                transform: [{ scaleX: -1 }],
-                                marginLeft: 20,
+                        <Pressable style={({ pressed }) => (
+                            {
+                                width: 32,
+                                height: 32,
+                                borderRadius: 32 / 2,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: pressed ? '#000' : null,
+                                opacity: pressed ? 0.3 : null,
+                            }
+                        )}
+                            onPress={() => {
+                                navigation.navigate('SearchScreen');
                             }}
-                        />
+                        >
+                            <AntDesign
+                                name="plus"
+                                size={24}
+                                color='#1C212F'
+                            />
+                        </Pressable>
+                        <Pressable style={({ pressed }) => (
+                            {
+                                width: 32,
+                                height: 32,
+                                borderRadius: 32 / 2,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: pressed ? '#000' : null,
+                                opacity: pressed ? 0.3 : null,
+                                marginLeft: 10,
+                            }
+                        )}>
+                            <MaterialCommunityIcons
+                                name="sort-variant"
+                                size={24}
+                                color='#1C212F'
+                                style={{
+                                    transform: [{ scaleX: -1 }],
+                                }}
+                            />
+                        </Pressable>
                     </View>
                 </View>
                 <View style={styles.infoContainer}>
                     <View>
                         <Ionicons name={weatherIcon} size={32} color="black" />
                         <Text style={{
-                            fontFamily: "Lato-Bold700",
+                            // fontFamily: "Lato-Bold700",
                             fontSize: 17,
                             marginTop: 5,
                             color: '#1C212F'
@@ -96,7 +130,7 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                     </View>
                     <View>
                         <Text style={{
-                            fontFamily: "Lato-Regular400",
+                            // fontFamily: "Lato-Regular400",
                             fontSize: 80,
                             marginTop: 5,
                             color: '#1C212F'
@@ -123,7 +157,7 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                     }
                 }>
                     <Text style={{
-                        fontFamily: "Lato-Bold900",
+                        // fontFamily: "Lato-Bold900",
                         fontSize: 20,
                         color: '#1C212F'
                     }}>Weather now</Text>
@@ -135,8 +169,8 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                                     <FontAwesome5 name="temperature-high" size={20} color="black" /> :
                                     <FontAwesome5 name="temperature-low" size={20} color="black" />}
                             </WeatherDetail>
-                            <WeatherDetail title='Precipitation' detail={rain + '%'}>
-                                <Ionicons name="umbrella-outline" size={24} color="black" />
+                            <WeatherDetail title='Visibility' detail={visibility + 'm'}>
+                                <Ionicons name="eye-outline" size={24} color="black" />
                             </WeatherDetail>
                         </View>
                         <View style={styles.detailContainerColumn}>
@@ -167,14 +201,15 @@ const styles = StyleSheet.create({
         paddingTop: 50,
     },
     upperContainer: {
-        flex: 7,
+        flex: 10,
         paddingHorizontal: 20,
     },
     bottomInfo: {
         backgroundColor: 'white',
-        flex: 3,
+        flex: 4.5,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
+        marginBottom: -30,
     },
     topBar: {
         flexDirection: 'row',
@@ -192,6 +227,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 30,
+
     },
     detailContainerColumn: {
         marginHorizontal: 30,
