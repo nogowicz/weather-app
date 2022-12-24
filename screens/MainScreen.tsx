@@ -28,7 +28,6 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Props = {
-    id: number,
     image: any,
     city: string,
     dateTime: string,
@@ -39,10 +38,10 @@ type Props = {
     humidity: number,
     feelsLike: string,
     background: string,
-    weatherIcon: keyof typeof Ionicons.glyphMap
+    weatherIcon: string
 };
 
-function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind, visibility, humidity, feelsLike, background, weatherIcon }: Props) {
+function MainScreen({ image, city, dateTime, temperature, weatherType, wind, visibility, humidity, feelsLike, background, weatherIcon }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     // let [fontsLoaded] = useFonts({
     //     "Lato-Bold900": Lato_900Black,
@@ -84,6 +83,24 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                                 backgroundColor: pressed ? '#000' : null,
                                 opacity: pressed ? 0.3 : null,
                             }
+                        )}>
+                            <Ionicons
+                                name="search"
+                                size={24}
+                                color="black"
+                            />
+                        </Pressable>
+                        <Pressable style={({ pressed }) => (
+                            {
+                                width: 32,
+                                height: 32,
+                                borderRadius: 32 / 2,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: pressed ? '#000' : null,
+                                opacity: pressed ? 0.3 : null,
+                                marginLeft: 10,
+                            }
                         )}
                             onPress={() => {
                                 navigation.navigate('SearchScreen');
@@ -119,8 +136,12 @@ function MainScreen({ id, image, city, dateTime, temperature, weatherType, wind,
                     </View>
                 </View>
                 <View style={styles.infoContainer}>
-                    <View>
-                        <Ionicons name={weatherIcon} size={32} color="black" />
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        {/* <Ionicons name={weatherIcon} size={32} color="black" /> */}
+                        <Image
+                            source={{ uri: `http://openweathermap.org/img/wn/${weatherIcon}@2x.png` }}
+                            style={{ width: 60, height: 60 }}
+                        />
                         <Text style={{
                             // fontFamily: "Lato-Bold700",
                             fontSize: 17,
