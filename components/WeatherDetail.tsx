@@ -4,12 +4,13 @@ import {
     View,
     Text,
 } from "react-native";
-// import { useFonts } from 'expo-font';
-// import {
-//     Lato_900Black,
-//     Lato_400Regular,
-//     Lato_700Bold
-// } from '@expo-google-fonts/lato'
+import { useFonts } from 'expo-font';
+import {
+    Lato_900Black,
+    Lato_400Regular,
+    Lato_700Bold
+} from '@expo-google-fonts/lato'
+import Skeleton from "./Skeleton";
 
 type Props = {
     children: JSX.Element,
@@ -18,31 +19,51 @@ type Props = {
 };
 
 function WeatherDetail({ children, title, detail }: Props) {
-    // let [fontsLoaded] = useFonts({
-    //     "Lato-Bold900": Lato_900Black,
-    //     "Lato-Regular400": Lato_400Regular,
-    //     "Lato-Bold700": Lato_700Bold
-    // })
-    return (
-        <View style={styles.container}>
-            <View style={styles.icon}>
-                {children}
+    let [fontsLoaded] = useFonts({
+        "Lato-Bold900": Lato_900Black,
+        "Lato-Regular400": Lato_400Regular,
+        "Lato-Bold700": Lato_700Bold
+    })
+
+    if (detail === 'undefined' || detail === 0 + ' km/h' || detail === 0 + ' m' || detail === 0 + ' %') {
+        return (
+            <View style={styles.container}>
+                <View style={styles.icon}>
+                    {children}
+                </View>
+                <View style={styles.info}>
+                    <Text style={{
+                        fontFamily: "Lato-Regular400",
+                        fontSize: 15,
+                        marginTop: 5,
+                        color: '#C4C6CD'
+                    }}>{title}</Text>
+                    <Skeleton height={17} width={60} />
+                </View>
             </View>
-            <View style={styles.info}>
-                <Text style={{
-                    // fontFamily: "Lato-Regular400",
-                    fontSize: 15,
-                    marginTop: 5,
-                    color: '#C4C6CD'
-                }}>{title}</Text>
-                <Text style={{
-                    // fontFamily: "Lato-Bold900",
-                    fontSize: 17,
-                    color: '#1C212F'
-                }}>{detail}</Text>
+        );
+    } else {
+        return (
+            <View style={styles.container}>
+                <View style={styles.icon}>
+                    {children}
+                </View>
+                <View style={styles.info}>
+                    <Text style={{
+                        fontFamily: "Lato-Regular400",
+                        fontSize: 15,
+                        marginTop: 5,
+                        color: '#C4C6CD'
+                    }}>{title}</Text>
+                    <Text style={{
+                        fontFamily: "Lato-Bold900",
+                        fontSize: 17,
+                        color: '#1C212F'
+                    }}>{detail}</Text>
+                </View>
             </View>
-        </View>
-    );
+        );
+    }
 }
 
 export default WeatherDetail;

@@ -5,14 +5,14 @@ import {
     SafeAreaView,
     Image,
     Dimensions,
+    ActivityIndicator
 } from 'react-native';
-// import { useFonts } from 'expo-font';
-// import {
-//     Lato_900Black,
-//     Lato_400Regular,
-//     Lato_700Bold
-// } from '@expo-google-fonts/lato'
-// import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
+import {
+    Lato_900Black,
+    Lato_400Regular,
+    Lato_700Bold
+} from '@expo-google-fonts/lato'
 import {
     AntDesign,
     MaterialCommunityIcons,
@@ -26,6 +26,7 @@ import { Pressable } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import Skeleton from '../components/Skeleton';
 
 type Props = {
     image: any,
@@ -43,170 +44,307 @@ type Props = {
 
 function MainScreen({ image, city, dateTime, temperature, weatherType, wind, visibility, humidity, feelsLike, background, weatherIcon }: Props) {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
-    // let [fontsLoaded] = useFonts({
-    //     "Lato-Bold900": Lato_900Black,
-    //     "Lato-Regular400": Lato_400Regular,
-    //     "Lato-Bold700": Lato_700Bold
-    // })
-    // if (!fontsLoaded) {
-    //     // return <AppLoading />
-    // }
+    let [fontsLoaded] = useFonts({
+        "Lato-Bold900": Lato_900Black,
+        "Lato-Regular400": Lato_400Regular,
+        "Lato-Bold700": Lato_700Bold
+    })
+    if (!fontsLoaded) {
+        return <ActivityIndicator style={{ justifyContent: 'center', alignItems: 'center', }} size='large' color='#487db9' />
+    }
 
+    if (city != 'undefined') {
+        return (
+            <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
+                <View style={[styles.upperContainer, { backgroundColor: background }]}>
+                    <View style={styles.topBar}>
+                        <View>
+                            <Text style={{
+                                fontFamily: "Lato-Bold900",
+                                fontSize: 20,
+                                color: '#1C212F'
+                            }}>{city}</Text>
+                            <Text style={{
+                                fontFamily: "Lato-Regular400",
+                                fontSize: 15,
+                                marginTop: 5,
+                                color: '#1C212F'
+                            }}>{dateTime}</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'row',
+                        }}>
+                            <Pressable style={({ pressed }) => (
+                                {
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: 32 / 2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: pressed ? '#000' : null,
+                                    opacity: pressed ? 0.3 : null,
+                                }
+                            )}>
+                                <Ionicons
+                                    name="search"
+                                    size={24}
+                                    color="black"
+                                />
+                            </Pressable>
+                            <Pressable style={({ pressed }) => (
+                                {
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: 32 / 2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: pressed ? '#000' : null,
+                                    opacity: pressed ? 0.3 : null,
+                                    marginLeft: 10,
+                                }
+                            )}
+                                onPress={() => {
+                                    navigation.navigate('SearchScreen');
+                                }}
+                            >
+                                <AntDesign
+                                    name="plus"
+                                    size={24}
+                                    color='#1C212F'
+                                />
+                            </Pressable>
+                            <Pressable style={({ pressed }) => (
+                                {
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: 32 / 2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: pressed ? '#000' : null,
+                                    opacity: pressed ? 0.3 : null,
+                                    marginLeft: 10,
+                                }
+                            )}>
+                                <MaterialCommunityIcons
+                                    name="sort-variant"
+                                    size={24}
+                                    color='#1C212F'
+                                    style={{
+                                        transform: [{ scaleX: -1 }],
+                                    }}
+                                />
+                            </Pressable>
+                        </View>
+                    </View>
+                    <View style={styles.infoContainer}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Image
+                                source={{ uri: `http://openweathermap.org/img/wn/${weatherIcon}@2x.png` }}
+                                style={{ width: 60, height: 60 }}
+                            />
+                            <Text style={{
+                                fontFamily: "Lato-Bold700",
+                                fontSize: 17,
+                                marginTop: 5,
+                                color: '#1C212F'
+                            }}>{weatherType}</Text>
+                        </View>
+                        <View>
+                            <Text style={{
+                                fontFamily: "Lato-Regular400",
+                                fontSize: 80,
+                                marginTop: 5,
+                                color: '#1C212F'
+                            }}>{temperature}</Text>
+                        </View>
+                    </View>
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                        <Image
+                            source={image}
+                            style={
+                                {
+                                    width: 270,
+                                    height: 270,
+                                    marginTop: 10,
+                                }}
+                        />
+                    </View>
 
-    return (
-        <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
-            <View style={[styles.upperContainer, { backgroundColor: background }]}>
-                <View style={styles.topBar}>
-                    <View>
+                </View>
+                <View style={styles.bottomInfo}>
+                    <View style={
+                        {
+                            padding: 20,
+                        }
+                    }>
                         <Text style={{
-                            // fontFamily: "Lato-Bold900",
+                            fontFamily: "Lato-Bold900",
                             fontSize: 20,
                             color: '#1C212F'
-                        }}>{city}</Text>
-                        <Text style={{
-                            // fontFamily: "Lato-Regular400",
-                            fontSize: 15,
-                            marginTop: 5,
-                            color: '#1C212F'
-                        }}>{dateTime}</Text>
+                        }}>Weather now</Text>
+
+                        <View style={styles.detailsContainer}>
+                            <View style={styles.detailContainerColumn}>
+                                <WeatherDetail title='Feels like' detail={feelsLike}>
+                                    {parseInt(temperature) > 20 ?
+                                        <FontAwesome5 name="temperature-high" size={20} color="black" /> :
+                                        <FontAwesome5 name="temperature-low" size={20} color="black" />}
+                                </WeatherDetail>
+                                <WeatherDetail title='Visibility' detail={visibility + ' m'}>
+                                    <Ionicons name="eye-outline" size={24} color="black" />
+                                </WeatherDetail>
+                            </View>
+                            <View style={styles.detailContainerColumn}>
+                                <WeatherDetail title='Wind' detail={wind + ' km/h'}>
+                                    <Feather name="wind" size={24} color="black" />
+                                </WeatherDetail>
+                                <WeatherDetail title='Humidity' detail={humidity + ' %'}>
+                                    <Ionicons name="water-outline" size={24} color="black" />
+                                </WeatherDetail>
+                            </View>
+                        </View>
                     </View>
-                    <View style={{
-                        flexDirection: 'row',
-                    }}>
-                        <Pressable style={({ pressed }) => (
-                            {
-                                width: 32,
-                                height: 32,
-                                borderRadius: 32 / 2,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: pressed ? '#000' : null,
-                                opacity: pressed ? 0.3 : null,
-                            }
-                        )}>
-                            <Ionicons
-                                name="search"
-                                size={24}
-                                color="black"
-                            />
-                        </Pressable>
-                        <Pressable style={({ pressed }) => (
-                            {
-                                width: 32,
-                                height: 32,
-                                borderRadius: 32 / 2,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: pressed ? '#000' : null,
-                                opacity: pressed ? 0.3 : null,
-                                marginLeft: 10,
-                            }
-                        )}
-                            onPress={() => {
-                                navigation.navigate('SearchScreen');
-                            }}
-                        >
-                            <AntDesign
-                                name="plus"
-                                size={24}
-                                color='#1C212F'
-                            />
-                        </Pressable>
-                        <Pressable style={({ pressed }) => (
-                            {
-                                width: 32,
-                                height: 32,
-                                borderRadius: 32 / 2,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: pressed ? '#000' : null,
-                                opacity: pressed ? 0.3 : null,
-                                marginLeft: 10,
-                            }
-                        )}>
-                            <MaterialCommunityIcons
-                                name="sort-variant"
-                                size={24}
-                                color='#1C212F'
-                                style={{
-                                    transform: [{ scaleX: -1 }],
+                </View>
+            </SafeAreaView>
+        );
+    } else {
+        return (
+            <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
+                <View style={[styles.upperContainer, { backgroundColor: background }]}>
+                    <View style={styles.topBar}>
+                        <View>
+                            <Skeleton height={20} width={100} />
+                            <View style={{ marginTop: 5 }}>
+                                <Skeleton height={15} width={70} />
+                            </View>
+                        </View>
+                        <View style={{
+                            flexDirection: 'row',
+                        }}>
+                            <Pressable style={({ pressed }) => (
+                                {
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: 32 / 2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: pressed ? '#000' : null,
+                                    opacity: pressed ? 0.3 : null,
+                                }
+                            )}>
+                                <Ionicons
+                                    name="search"
+                                    size={24}
+                                    color="black"
+                                />
+                            </Pressable>
+                            <Pressable style={({ pressed }) => (
+                                {
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: 32 / 2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: pressed ? '#000' : null,
+                                    opacity: pressed ? 0.3 : null,
+                                    marginLeft: 10,
+                                }
+                            )}
+                                onPress={() => {
+                                    navigation.navigate('SearchScreen');
                                 }}
+                            >
+                                <AntDesign
+                                    name="plus"
+                                    size={24}
+                                    color='#1C212F'
+                                />
+                            </Pressable>
+                            <Pressable style={({ pressed }) => (
+                                {
+                                    width: 32,
+                                    height: 32,
+                                    borderRadius: 32 / 2,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    backgroundColor: pressed ? '#000' : null,
+                                    opacity: pressed ? 0.3 : null,
+                                    marginLeft: 10,
+                                }
+                            )}>
+                                <MaterialCommunityIcons
+                                    name="sort-variant"
+                                    size={24}
+                                    color='#1C212F'
+                                    style={{
+                                        transform: [{ scaleX: -1 }],
+                                    }}
+                                />
+                            </Pressable>
+                        </View>
+                    </View>
+                    <View style={styles.infoContainer}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Image
+                                source={{ uri: `http://openweathermap.org/img/wn/${weatherIcon}@2x.png` }}
+                                style={{ width: 60, height: 60 }}
                             />
-                        </Pressable>
+                            <Skeleton height={15} width={90} />
+                        </View>
+                        <View>
+                            <Skeleton height={80} width={150} />
+                        </View>
                     </View>
-                </View>
-                <View style={styles.infoContainer}>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        {/* <Ionicons name={weatherIcon} size={32} color="black" /> */}
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <Image
-                            source={{ uri: `http://openweathermap.org/img/wn/${weatherIcon}@2x.png` }}
-                            style={{ width: 60, height: 60 }}
+                            source={image}
+                            style={
+                                {
+                                    width: 270,
+                                    height: 270,
+                                    marginTop: 10,
+                                }}
                         />
-                        <Text style={{
-                            // fontFamily: "Lato-Bold700",
-                            fontSize: 17,
-                            marginTop: 5,
-                            color: '#1C212F'
-                        }}>{weatherType}</Text>
                     </View>
-                    <View>
+
+                </View>
+                <View style={styles.bottomInfo}>
+                    <View style={
+                        {
+                            padding: 20,
+                        }
+                    }>
                         <Text style={{
-                            // fontFamily: "Lato-Regular400",
-                            fontSize: 80,
-                            marginTop: 5,
+                            fontFamily: "Lato-Bold900",
+                            fontSize: 20,
                             color: '#1C212F'
-                        }}>{temperature}</Text>
-                    </View>
-                </View>
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <Image
-                        source={image}
-                        style={
-                            {
-                                width: 270,
-                                height: 270,
-                                marginTop: 10,
-                            }}
-                    />
-                </View>
+                        }}>Weather now</Text>
 
-            </View>
-            <View style={styles.bottomInfo}>
-                <View style={
-                    {
-                        padding: 20,
-                    }
-                }>
-                    <Text style={{
-                        // fontFamily: "Lato-Bold900",
-                        fontSize: 20,
-                        color: '#1C212F'
-                    }}>Weather now</Text>
-
-                    <View style={styles.detailsContainer}>
-                        <View style={styles.detailContainerColumn}>
-                            <WeatherDetail title='Feels like' detail={feelsLike}>
-                                {parseInt(temperature) > 20 ?
-                                    <FontAwesome5 name="temperature-high" size={20} color="black" /> :
-                                    <FontAwesome5 name="temperature-low" size={20} color="black" />}
-                            </WeatherDetail>
-                            <WeatherDetail title='Visibility' detail={visibility + 'm'}>
-                                <Ionicons name="eye-outline" size={24} color="black" />
-                            </WeatherDetail>
-                        </View>
-                        <View style={styles.detailContainerColumn}>
-                            <WeatherDetail title='Wind' detail={wind + ' km/h'}>
-                                <Feather name="wind" size={24} color="black" />
-                            </WeatherDetail>
-                            <WeatherDetail title='Humidity' detail={humidity + '%'}>
-                                <Ionicons name="water-outline" size={24} color="black" />
-                            </WeatherDetail>
+                        <View style={styles.detailsContainer}>
+                            <View style={styles.detailContainerColumn}>
+                                <WeatherDetail title='Feels like' detail={feelsLike}>
+                                    {parseInt(temperature) > 20 ?
+                                        <FontAwesome5 name="temperature-high" size={20} color="black" /> :
+                                        <FontAwesome5 name="temperature-low" size={20} color="black" />}
+                                </WeatherDetail>
+                                <WeatherDetail title='Visibility' detail={visibility + ' m'}>
+                                    <Ionicons name="eye-outline" size={24} color="black" />
+                                </WeatherDetail>
+                            </View>
+                            <View style={styles.detailContainerColumn}>
+                                <WeatherDetail title='Wind' detail={wind + ' km/h'}>
+                                    <Feather name="wind" size={24} color="black" />
+                                </WeatherDetail>
+                                <WeatherDetail title='Humidity' detail={humidity + ' %'}>
+                                    <Ionicons name="water-outline" size={24} color="black" />
+                                </WeatherDetail>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
-        </SafeAreaView>
-    );
+            </SafeAreaView>
+        );
+    }
 }
 
 export default MainScreen;
@@ -218,7 +356,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: windowWidth,
-        height: windowHeight,
         paddingTop: 50,
     },
     upperContainer: {
@@ -226,11 +363,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     bottomInfo: {
-        backgroundColor: 'white',
-        flex: 4.5,
+        backgroundColor: '#fff',
+        flex: 5,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        marginBottom: -30,
+
     },
     topBar: {
         flexDirection: 'row',
@@ -248,7 +385,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 30,
-
     },
     detailContainerColumn: {
         marginHorizontal: 30,

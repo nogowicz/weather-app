@@ -4,6 +4,8 @@ import { View, Pressable, StyleSheet, Dimensions, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { TextInput } from 'react-native';
 import { fetchCityList } from '../utils/data';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type RootStackParamList = {
     SearchScreen: undefined;
 };
@@ -18,11 +20,12 @@ type Props = {
     navigation: ProfileScreenNavigationProp;
 };
 
-function SearchScreen({ navigation }: Props) {
+function SearchScreen() {
     const [locations, setLocations] = useState([{ name: '', country: { name: '' } }])
     const [searchValue, setSearchValue] = useState('')
-
-
+    // const [favoriteCities, setFavoriteCities] = useState([]);
+    let favoriteCities: Array<string> = []
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
     async function getLocations() {
         try {
             const location = await fetchCityList(searchValue)
@@ -33,7 +36,12 @@ function SearchScreen({ navigation }: Props) {
         }
     }
 
-
+    useEffect(() => {
+        AsyncStorage.getItem('@favoriteCities', (err, result) => {
+            console.log(result)
+            favoriteCities = JSON.parse(result)
+        })
+    }, [])
 
 
 
@@ -77,6 +85,13 @@ function SearchScreen({ navigation }: Props) {
                         name="checkmark"
                         size={24} color="black"
                         style={styles.icon}
+                        onPress={() => {
+                            // setFavoriteCities(favoriteCities => [...favoriteCities, searchValue])
+                            if (!favoriteCities.includes(searchValue)) {
+                                favoriteCities.push(searchValue)
+                                AsyncStorage.setItem('@favoriteCities', JSON.stringify(favoriteCities))
+                            }
+                        }}
                     />
                 </Pressable>
             </View>

@@ -9,7 +9,6 @@ import {
 import MainScreen from './MainScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { fetchWeatherData } from '../utils/data';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRoute } from '@react-navigation/native';
@@ -18,9 +17,6 @@ type RootStackParamList = {
     WeatherScreens: undefined;
 };
 
-const wait = (timeout: any) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-}
 type ProfileScreenNavigationProp = NativeStackNavigationProp<
     RootStackParamList,
     'WeatherScreens'
@@ -44,90 +40,72 @@ interface Weather {
 }
 
 
-function WeatherScreens({ navigation }: Props) {
-    const route = useRoute<any>();
+function WeatherScreens() {
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState("");
-    const [favoriteCities, setFavoriteCity] = useState(["Wacławice", "Kaszyce", "Lublin", "Przemyśl"])
-    const [weatherData, setWeatherData] = useState<Weather>(
-        // {
-        //     name: 'Clear',
-        //     temp: (10 + '°C'),
-        //     city: "Lublin",
-        //     date: 'Dec 12 2022 07:33',
-        //     wind: 6,
-        //     feelsLike: (10 + '°C'),
-        //     visibility: 10000,
-        //     humidity: 50,
-        //     icon: '01d',
-        //     description: 'sunny'
-        // }
-    );
+    // const [favoriteCities, setFavoriteCity] = useState([""])
+    let favoriteCities: Array<string> = ['Lublin', "Warsaw"]
+
+    // const [locations, setLocations] = useState([...favoriteCities])
+    let locations: Array<string> = []
+    const [weatherData, setWeatherData] = useState<Weather>();
     const [weatherArray, setWeatherArray] = useState([]);
     let img = require('../assets/sunnyDay.png');
     let background = '#CFDBBA'
     let weatherIcon: string = '01d.png'
 
-
-
     const scrollX = useRef(new Animated.Value(0)).current;
-
     const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        wait(2000).then(() => setRefreshing(false));
-    }, []);
+    async function getWeatherData(city: string) {
+        const hour = (new Date()).getHours()
+        const minutes = (new Date()).getMinutes()
+        const dateAsString = (new Date()).toDateString() + " " + ((hour < 10) ? "0" + hour : hour) + ":" + ((minutes < 10) ? "0" + minutes : minutes)
+        setIsFetching(true);
+        try {
+            await fetchWeatherData(city).then((weather) => {
+                setWeatherData(
+                    {
+                        name: weather.name,
+                        temp: (Math.floor(weather.temperature) + '°C'),
+                        city: weather.city,
+                        date: dateAsString,
+                        wind: weather.wind,
+                        feelsLike: (Math.floor(weather.feelsLike) + '°C'),
+                        visibility: weather.visibility,
+                        humidity: weather.humidity,
+                        icon: weather.icon,
+                        description: weather.description
+                    }
+                )
+            })
 
-
-
-
-    useEffect(() => {
-        async function getWeatherData(city: string) {
-            setIsFetching(true);
-            try {
-                await fetchWeatherData(city).then((weather) => {
-                    setWeatherData(
-                        {
-                            name: weather.name,
-                            temp: (Math.floor(weather.temperature) + '°C'),
-                            city: weather.city,
-                            date: (weather.date).slice(0, -7),
-                            wind: weather.wind,
-                            feelsLike: (Math.floor(weather.feelsLike) + '°C'),
-                            visibility: weather.visibility,
-                            humidity: weather.humidity,
-                            icon: weather.icon,
-                            description: weather.description
-                        }
-                    )
-                })
-
-
-            } catch (error) {
-                setError("Could not fetch weather data")
-                console.log("Fetching data error: ", error)
-            }
-
+        } catch (error) {
+            setError("Could not fetch weather data")
+            console.log("Fetching data error: ", error)
         }
-
+    }
+    useEffect(() => {
         favoriteCities.forEach(element => {
             getWeatherData(element)
         });
-        setIsFetching(false);
     }, [])
-
     useEffect(() => {
         if (weatherData) {
             setWeatherArray(weatherArray => [...weatherArray, weatherData]);
         }
     }, [weatherData])
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        favoriteCities.forEach(element => {
+            getWeatherData(element)
+        });
+        setRefreshing(false);
+    }, []);
 
 
-    // {"city": "Warsaw", "date": "Fri, 23 Dec 2022 15:26", "description": "mist", "feelsLike": "3°C", "humidity": 95, "icon": "50n", "name": "Mist", "temp": "6°C", "visibility": 3000, "wind": 3.09}, {"city": "Warsaw", "date": "Fri, 23 Dec 2022 15:26", "description": "mist", "feelsLike": "3°C", "humidity": 95, "icon": "50n", "name": "Mist", "temp": "6°C", "visibility": 3000, "wind": 3.09}
     if (weatherArray.length > 0) {
-        console.log('data fetched' + weatherData[0])
         return (
             <>
 
@@ -214,20 +192,45 @@ function WeatherScreens({ navigation }: Props) {
                             )
                         } else {
                             return (
-                                <MainScreen
-                                    key={index}
-                                    image={require('../assets/stormyDay.png')}
-                                    city={'No data'}
-                                    dateTime={'No data'}
-                                    temperature={'-°C'}
-                                    weatherType={'No data'}
-                                    wind={0}
-                                    visibility={0}
-                                    humidity={0}
-                                    feelsLike={'-°C'}
-                                    background={'#B1AFFF'}
-                                    weatherIcon={"50d"}
-                                />
+
+                                <ScrollView
+                                    horizontal={true}
+                                    pagingEnabled
+                                    showsHorizontalScrollIndicator={false}
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={refreshing}
+                                            onRefresh={onRefresh}
+                                        />
+                                    }
+                                    onScroll={Animated.event(
+                                        [
+                                            {
+                                                nativeEvent: {
+                                                    contentOffset: {
+                                                        x: scrollX
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        { useNativeDriver: false }
+                                    )}
+                                    scrollEventThrottle={1}
+                                >
+                                    <MainScreen
+                                        image={require('../assets/problem.png')}
+                                        city={'undefined'}
+                                        dateTime={'undefined'}
+                                        temperature={'und'}
+                                        weatherType={'undefined'}
+                                        wind={0}
+                                        visibility={0}
+                                        humidity={0}
+                                        feelsLike={'undefined'}
+                                        background={'#DFECFD'}
+                                        weatherIcon={"undefined"}
+                                    />
+                                </ScrollView>
                             )
                         }
                     })}
@@ -263,19 +266,45 @@ function WeatherScreens({ navigation }: Props) {
     } else {
         console.log('data not fetched yet')
         return (
-            <MainScreen
-                image={require('../assets/stormyDay.png')}
-                city={'No data'}
-                dateTime={'No data'}
-                temperature={'-°C'}
-                weatherType={'No data'}
-                wind={0}
-                visibility={0}
-                humidity={0}
-                feelsLike={'-°C'}
-                background={'#B1AFFF'}
-                weatherIcon={"50d"}
-            />
+
+            <ScrollView
+                horizontal={true}
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+                onScroll={Animated.event(
+                    [
+                        {
+                            nativeEvent: {
+                                contentOffset: {
+                                    x: scrollX
+                                }
+                            }
+                        }
+                    ],
+                    { useNativeDriver: false }
+                )}
+                scrollEventThrottle={1}
+            >
+                <MainScreen
+                    image={require('../assets/problem.png')}
+                    city={'undefined'}
+                    dateTime={'undefined'}
+                    temperature={'und'}
+                    weatherType={'undefined'}
+                    wind={0}
+                    visibility={0}
+                    humidity={0}
+                    feelsLike={'undefined'}
+                    background={'#DFECFD'}
+                    weatherIcon={"undefined"}
+                />
+            </ScrollView>
         )
     }
 
