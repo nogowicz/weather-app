@@ -11,7 +11,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchWeatherData } from '../utils/data';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { loadFavoriteCities } from '../store/redux/favoriteCities';
+import { AnyAction, ThunkAction, ThunkDispatch } from '@reduxjs/toolkit';
 type RootStackParamList = {
     WeatherScreens: undefined;
 };
@@ -39,11 +41,11 @@ interface Weather {
 }
 
 
-function WeatherScreens() {
-    const [favoriteCities, setFavoriteCities] = useState([]);
+function WeatherScreens({ navigation }: Props) {
+    const dispatch = useDispatch<ThunkDispatch<any, any, AnyAction>>();
+    const favoriteCities = useSelector((state: { favoriteCities }) => state.favoriteCities.favoriteCities);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState("");
-    const [fetchingFromAsync, setFetchingFromAsync] = useState(true);
     let locations: Array<string> = [...favoriteCities]
     const [weatherData, setWeatherData] = useState<Weather>();
     const [weatherArray, setWeatherArray] = useState([]);
@@ -62,6 +64,8 @@ function WeatherScreens() {
     //         });
     //     });
     // });
+
+
 
     async function getWeatherData(city: string) {
         const hour = (new Date()).getHours()
@@ -96,6 +100,11 @@ function WeatherScreens() {
             console.log("Fetching data error: ", error)
         }
     }
+    useEffect(() => {
+        dispatch(loadFavoriteCities());
+    }, []);
+
+
 
     useEffect(() => {
         setWeatherArray([])
@@ -103,18 +112,12 @@ function WeatherScreens() {
     }, [clearArray]);
 
     useEffect(() => {
-        AsyncStorage.getItem('favoriteCities').then((favoriteCities) => {
-            setFavoriteCities(JSON.parse(favoriteCities))
-        }).then(() => setFetchingFromAsync(false))
-    }, [])
-
-    useEffect(() => {
         console.log("I'm before on Refresh and favoriteCities.length: ", favoriteCities.length)
-        if (!fetchingFromAsync && favoriteCities.length > 0) {
+        if (favoriteCities.length > 0) {
             console.log("I'm inside on Refresh and favoriteCities.length: ", favoriteCities.length)
             getElements();
         }
-    }, [favoriteCities, fetchingFromAsync])
+    }, [favoriteCities])
 
 
     useEffect(() => {
@@ -137,13 +140,13 @@ function WeatherScreens() {
 
 
     const onRefresh = useCallback(() => {
+        dispatch(loadFavoriteCities())
         console.log("I'm in onRefresh")
         setClearArray(true);
         setRefreshing(true);
         getElements()
         setRefreshing(false);
-    }, []);
-
+    }, []) as () => void;
 
     if (weatherArray.length > 0) {
         return (
@@ -304,7 +307,6 @@ function WeatherScreens() {
             </>
         );
     } else {
-        // console.log('data not fetched yet')
         return (
 
             <ScrollView

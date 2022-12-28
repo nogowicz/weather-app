@@ -52,7 +52,11 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
         "Lato-Bold700": Lato_700Bold
     })
     if (!fontsLoaded) {
-        return <ActivityIndicator style={{ justifyContent: 'center', alignItems: 'center', }} size='large' color='#487db9' />
+        return (
+            <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                <ActivityIndicator size='large' color='#487db9' />
+            </View>
+        )
     }
 
     if (city != 'undefined') {

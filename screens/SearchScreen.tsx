@@ -93,7 +93,7 @@ function SearchScreen() {
                                 <Pressable
                                     onPress={() => {
                                         favoriteCities.push(loc.name);
-
+                                        console.log("Added ", loc.name)
                                         AsyncStorage.setItem('favoriteCities', JSON.stringify(favoriteCities));
                                     }}
                                 >
