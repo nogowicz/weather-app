@@ -22,9 +22,8 @@ type Props = {
 
 function SearchScreen() {
     const [locations, setLocations] = useState([{ name: '', country: { name: '' } }])
-    const [searchValue, setSearchValue] = useState('')
-    // const [favoriteCities, setFavoriteCities] = useState([]);
-    let favoriteCities: Array<string> = []
+    const [searchValue, setSearchValue] = useState('');
+    const [favoriteCities, setFavoriteCities] = useState([]);
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     async function getLocations() {
         try {
@@ -37,12 +36,10 @@ function SearchScreen() {
     }
 
     useEffect(() => {
-        AsyncStorage.getItem('@favoriteCities', (err, result) => {
-            console.log(result)
-            favoriteCities = JSON.parse(result)
+        AsyncStorage.getItem('favoriteCities').then((favoriteCities) => {
+            setFavoriteCities(JSON.parse(favoriteCities))
         })
     }, [])
-
 
 
     return (
@@ -80,35 +77,30 @@ function SearchScreen() {
                     </Pressable>
 
                 </View>
-                <Pressable>
-                    <Ionicons
-                        name="checkmark"
-                        size={24} color="black"
-                        style={styles.icon}
-                        onPress={() => {
-                            // setFavoriteCities(favoriteCities => [...favoriteCities, searchValue])
-                            if (!favoriteCities.includes(searchValue)) {
-                                favoriteCities.push(searchValue)
-                                AsyncStorage.setItem('@favoriteCities', JSON.stringify(favoriteCities))
-                            }
-                        }}
-                    />
-                </Pressable>
+
             </View>
             <View>
                 {locations.map((loc, index) => {
                     if (loc.name != '') {
                         return (
 
-                            <Pressable
-                                onPress={() => {
-                                    setSearchValue(loc.name)
-                                }}
+                            <View
                                 style={styles.record}
                                 key={index}
                             >
+
                                 <Text>{loc.name} - {loc.country.name}</Text>
-                            </Pressable>
+                                <Pressable
+                                    onPress={() => {
+                                        favoriteCities.push(loc.name);
+
+                                        AsyncStorage.setItem('favoriteCities', JSON.stringify(favoriteCities));
+                                    }}
+                                >
+                                    {favoriteCities.find((obj) => obj === loc.name) ? <Ionicons name="heart-outline" size={24} color="black" /> :
+                                        <Ionicons name="heart-outline" size={24} color="black" />}
+                                </Pressable>
+                            </View>
                         )
                     }
                 })}
@@ -141,7 +133,7 @@ const styles = StyleSheet.create({
     searchBox: {
         borderWidth: 1,
         borderColor: '#ccc',
-        width: windowWidth * 0.75,
+        width: windowWidth * 0.8,
         height: 40,
         borderRadius: 10,
         justifyContent: 'center',
@@ -154,7 +146,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#ccc',
         height: 40,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         paddingHorizontal: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 });

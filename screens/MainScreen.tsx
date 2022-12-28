@@ -21,12 +21,13 @@ import {
     Feather,
 } from '@expo/vector-icons';
 import WeatherDetail from '../components/WeatherDetail';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pressable } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Skeleton from '../components/Skeleton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     image: any,
@@ -43,6 +44,7 @@ type Props = {
 };
 
 function MainScreen({ image, city, dateTime, temperature, weatherType, wind, visibility, humidity, feelsLike, background, weatherIcon }: Props) {
+    const [favoriteCities, setFavoriteCities] = useState([]);
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     let [fontsLoaded] = useFonts({
         "Lato-Bold900": Lato_900Black,
@@ -85,11 +87,8 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                     opacity: pressed ? 0.3 : null,
                                 }
                             )}>
-                                <Ionicons
-                                    name="search"
-                                    size={24}
-                                    color="black"
-                                />
+                                {favoriteCities.find((obj) => obj === city) ? <Ionicons name="heart-outline" size={24} color="black" /> :
+                                    <Ionicons name="heart-outline" size={24} color="black" />}
                             </Pressable>
                             <Pressable style={({ pressed }) => (
                                 {

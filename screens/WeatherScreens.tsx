@@ -11,7 +11,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchWeatherData } from '../utils/data';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useRoute } from '@react-navigation/native';
 
 type RootStackParamList = {
     WeatherScreens: undefined;
@@ -41,21 +40,28 @@ interface Weather {
 
 
 function WeatherScreens() {
+    const [favoriteCities, setFavoriteCities] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
     const [error, setError] = useState("");
-    // const [favoriteCities, setFavoriteCity] = useState([""])
-    let favoriteCities: Array<string> = ['Lublin', "Warsaw"]
-
-    // const [locations, setLocations] = useState([...favoriteCities])
-    let locations: Array<string> = []
+    const [fetchingFromAsync, setFetchingFromAsync] = useState(true);
+    let locations: Array<string> = [...favoriteCities]
     const [weatherData, setWeatherData] = useState<Weather>();
     const [weatherArray, setWeatherArray] = useState([]);
+    const [clearArray, setClearArray] = useState(false);
     let img = require('../assets/sunnyDay.png');
     let background = '#CFDBBA'
     let weatherIcon: string = '01d.png'
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const [refreshing, setRefreshing] = useState(false);
+
+    // AsyncStorage.getAllKeys().then((keys) => {
+    //     keys.forEach((key) => {
+    //         AsyncStorage.getItem(key).then((value) => {
+    //             console.log(key, value);
+    //         });
+    //     });
+    // });
 
     async function getWeatherData(city: string) {
         const hour = (new Date()).getHours()
@@ -64,6 +70,8 @@ function WeatherScreens() {
         setIsFetching(true);
         try {
             await fetchWeatherData(city).then((weather) => {
+
+                console.log(city)
                 setWeatherData(
                     {
                         name: weather.name,
@@ -78,29 +86,61 @@ function WeatherScreens() {
                         description: weather.description
                     }
                 )
+
+
             })
+            setIsFetching(false);
 
         } catch (error) {
             setError("Could not fetch weather data")
             console.log("Fetching data error: ", error)
         }
     }
+
     useEffect(() => {
-        favoriteCities.forEach(element => {
-            getWeatherData(element)
-        });
+        setWeatherArray([])
+        setClearArray(false);
+    }, [clearArray]);
+
+    useEffect(() => {
+        AsyncStorage.getItem('favoriteCities').then((favoriteCities) => {
+            setFavoriteCities(JSON.parse(favoriteCities))
+        }).then(() => setFetchingFromAsync(false))
     }, [])
+
+    useEffect(() => {
+        console.log("I'm before on Refresh and favoriteCities.length: ", favoriteCities.length)
+        if (!fetchingFromAsync && favoriteCities.length > 0) {
+            console.log("I'm inside on Refresh and favoriteCities.length: ", favoriteCities.length)
+            getElements();
+        }
+    }, [favoriteCities, fetchingFromAsync])
+
+
     useEffect(() => {
         if (weatherData) {
-            setWeatherArray(weatherArray => [...weatherArray, weatherData]);
+            const cityExists = weatherArray.some(item => item.city === weatherData.city);
+            if (!cityExists) {
+                setWeatherArray(weatherArray => [...weatherArray, weatherData]);
+            }
         }
     }, [weatherData])
 
+    async function getElements() {
+        console.log("I'm in get elements before loop and favoriteCities.length: ", favoriteCities.length)
+        for (let i = 0; i < favoriteCities.length; i++) {
+            console.log("I'm inside for and favoriteCities.length: ", favoriteCities.length)
+            await getWeatherData(favoriteCities[i])
+        }
+
+    }
+
+
     const onRefresh = useCallback(() => {
+        console.log("I'm in onRefresh")
+        setClearArray(true);
         setRefreshing(true);
-        favoriteCities.forEach(element => {
-            getWeatherData(element)
-        });
+        getElements()
         setRefreshing(false);
     }, []);
 
@@ -264,7 +304,7 @@ function WeatherScreens() {
             </>
         );
     } else {
-        console.log('data not fetched yet')
+        // console.log('data not fetched yet')
         return (
 
             <ScrollView
