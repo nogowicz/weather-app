@@ -8,12 +8,11 @@ import {
 } from 'react-native';
 import MainScreen from './MainScreen';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchWeatherData } from '../utils/data';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadFavoriteCities } from '../store/redux/favoriteCities';
-import { AnyAction, ThunkAction, ThunkDispatch } from '@reduxjs/toolkit';
+import { AnyAction, ThunkDispatch, createSelector } from '@reduxjs/toolkit';
 type RootStackParamList = {
     WeatherScreens: undefined;
 };
@@ -43,44 +42,42 @@ interface Weather {
 
 function WeatherScreens({ navigation }: Props) {
     const dispatch = useDispatch<ThunkDispatch<any, any, AnyAction>>();
-    const favoriteCities = useSelector((state: { favoriteCities }) => state.favoriteCities.favoriteCities);
-    const [isFetching, setIsFetching] = useState(true);
+    const selectFavoriteCities = createSelector(
+        (state) => state.favoriteCities.favoriteCities,
+        (favoriteCities) => favoriteCities == null ? ['New York'] : favoriteCities
+    );
+    const favoriteCities = useSelector(state => selectFavoriteCities(state));
+    const [favoriteCitiesUpdated, setFavoriteCitiesUpdated] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState("");
-    let locations: Array<string> = [...favoriteCities]
     const [weatherData, setWeatherData] = useState<Weather>();
     const [weatherArray, setWeatherArray] = useState([]);
     const [clearArray, setClearArray] = useState(false);
-    let img = require('../assets/sunnyDay.png');
-    let background = '#CFDBBA'
+    let img = require('../assets/problem.png');
+    let background = '#DFECFD'
     let weatherIcon: string = '01d.png'
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const [refreshing, setRefreshing] = useState(false);
-
-    // AsyncStorage.getAllKeys().then((keys) => {
-    //     keys.forEach((key) => {
-    //         AsyncStorage.getItem(key).then((value) => {
-    //             console.log(key, value);
-    //         });
-    //     });
-    // });
-
-
-
+    let requestCounter = 0
     async function getWeatherData(city: string) {
+        requestCounter++;
+        if (requestCounter > 55) {
+            return "Nie możesz pobierać danych więcej niż 60 razy na minutę.";
+        }
         const hour = (new Date()).getHours()
         const minutes = (new Date()).getMinutes()
         const dateAsString = (new Date()).toDateString() + " " + ((hour < 10) ? "0" + hour : hour) + ":" + ((minutes < 10) ? "0" + minutes : minutes)
         setIsFetching(true);
         try {
+            console.log("Fetching data: " + city)
             await fetchWeatherData(city).then((weather) => {
 
-                console.log(city)
                 setWeatherData(
                     {
                         name: weather.name,
                         temp: (Math.floor(weather.temperature) + '°C'),
-                        city: weather.city,
+                        city: (weather.city.indexOf(' Voivodeship') != -1 ? weather.city.replace(' Voivodeship', '') : weather.city),
                         date: dateAsString,
                         wind: weather.wind,
                         feelsLike: (Math.floor(weather.feelsLike) + '°C'),
@@ -100,10 +97,11 @@ function WeatherScreens({ navigation }: Props) {
             console.log("Fetching data error: ", error)
         }
     }
-    useEffect(() => {
-        dispatch(loadFavoriteCities());
-    }, []);
 
+    useEffect(() => {
+        dispatch(loadFavoriteCities())
+        console.log(favoriteCities)
+    }, []);
 
 
     useEffect(() => {
@@ -112,12 +110,16 @@ function WeatherScreens({ navigation }: Props) {
     }, [clearArray]);
 
     useEffect(() => {
-        console.log("I'm before on Refresh and favoriteCities.length: ", favoriteCities.length)
-        if (favoriteCities.length > 0) {
-            console.log("I'm inside on Refresh and favoriteCities.length: ", favoriteCities.length)
-            getElements();
+        if (!favoriteCitiesUpdated) {
+            console.log("I'm before on Refresh and favoriteCities.length: ", favoriteCities.length)
+            if (favoriteCities.length > 0) {
+                console.log("I'm inside on Refresh and favoriteCities.length: ", favoriteCities.length)
+                getElements();
+                setFavoriteCitiesUpdated(true);
+            }
         }
-    }, [favoriteCities])
+
+    }, [favoriteCities, favoriteCitiesUpdated])
 
 
     useEffect(() => {
@@ -131,22 +133,29 @@ function WeatherScreens({ navigation }: Props) {
 
     async function getElements() {
         console.log("I'm in get elements before loop and favoriteCities.length: ", favoriteCities.length)
-        for (let i = 0; i < favoriteCities.length; i++) {
-            console.log("I'm inside for and favoriteCities.length: ", favoriteCities.length)
-            await getWeatherData(favoriteCities[i])
+
+        if (favoriteCities && favoriteCities.length > 0) {
+            for await (const city of favoriteCities) {
+                console.log("I'm inside for and favoriteCities.length: ", favoriteCities.length)
+                await getWeatherData(city);
+            };
         }
+
 
     }
 
 
     const onRefresh = useCallback(() => {
-        dispatch(loadFavoriteCities())
         console.log("I'm in onRefresh")
         setClearArray(true);
         setRefreshing(true);
-        getElements()
-        setRefreshing(false);
-    }, []) as () => void;
+        dispatch(loadFavoriteCities())
+        console.log(favoriteCities)
+        getElements().then(() => {
+            setRefreshing(false);
+        })
+
+    }, [favoriteCities]) as () => void;
 
     if (weatherArray.length > 0) {
         return (

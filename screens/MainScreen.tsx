@@ -21,13 +21,15 @@ import {
     Feather,
 } from '@expo/vector-icons';
 import WeatherDetail from '../components/WeatherDetail';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Pressable } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Skeleton from '../components/Skeleton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFavoriteCities } from '../store/redux/favoriteCities';
+import { createSelector } from '@reduxjs/toolkit';
 
 type Props = {
     image: any,
@@ -44,7 +46,13 @@ type Props = {
 };
 
 function MainScreen({ image, city, dateTime, temperature, weatherType, wind, visibility, humidity, feelsLike, background, weatherIcon }: Props) {
-    const [favoriteCities, setFavoriteCities] = useState([]);
+    const dispatch = useDispatch();
+    const selectFavoriteCities = createSelector(
+        (state) => state.favoriteCities.favoriteCities,
+        (favoriteCities) => favoriteCities == null ? ['New York'] : favoriteCities
+    );
+    const favoriteCities = useSelector(state => selectFavoriteCities(state));
+    const [isFetching, setIsFetching] = useState(true);
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     let [fontsLoaded] = useFonts({
         "Lato-Bold900": Lato_900Black,
@@ -53,10 +61,21 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
     })
     if (!fontsLoaded) {
         return (
-            <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+            <View style={{ width: windowWidth, justifyContent: 'center', alignItems: 'center', }}>
                 <ActivityIndicator size='large' color='#487db9' />
             </View>
         )
+    }
+
+    function toggleHeart() {
+        if (favoriteCities.find((obj) => obj === city)) {
+            const newFavoriteCities = favoriteCities.filter(e => e !== city);
+            dispatch(setFavoriteCities({ favoriteCities: newFavoriteCities }))
+        } else {
+            let newFavoriteCities = [...favoriteCities];
+            newFavoriteCities.push(city)
+            dispatch(setFavoriteCities({ favoriteCities: newFavoriteCities }))
+        }
     }
 
     if (city != 'undefined') {
@@ -80,18 +99,21 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                         <View style={{
                             flexDirection: 'row',
                         }}>
-                            <Pressable style={({ pressed }) => (
-                                {
-                                    width: 32,
-                                    height: 32,
-                                    borderRadius: 32 / 2,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: pressed ? '#000' : null,
-                                    opacity: pressed ? 0.3 : null,
-                                }
-                            )}>
-                                {favoriteCities.find((obj) => obj === city) ? <Ionicons name="heart-outline" size={24} color="black" /> :
+                            <Pressable
+                                style={({ pressed }) => (
+                                    {
+                                        width: 32,
+                                        height: 32,
+                                        borderRadius: 32 / 2,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        backgroundColor: pressed ? '#000' : null,
+                                        opacity: pressed ? 0.3 : null,
+                                    }
+                                )}
+                                onPress={toggleHeart}
+                            >
+                                {favoriteCities.find((obj) => obj === city) ? <Ionicons name="heart" size={24} color="black" /> :
                                     <Ionicons name="heart-outline" size={24} color="black" />}
                             </Pressable>
                             <Pressable style={({ pressed }) => (
@@ -235,11 +257,23 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                     opacity: pressed ? 0.3 : null,
                                 }
                             )}>
-                                <Ionicons
-                                    name="search"
-                                    size={24}
-                                    color="black"
-                                />
+                                <Pressable
+                                    style={({ pressed }) => (
+                                        {
+                                            width: 32,
+                                            height: 32,
+                                            borderRadius: 32 / 2,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            backgroundColor: pressed ? '#000' : null,
+                                            opacity: pressed ? 0.3 : null,
+                                        }
+                                    )}
+                                    onPress={toggleHeart}
+                                >
+                                    {favoriteCities.find((obj) => obj === city) ? <Ionicons name="heart" size={24} color="black" /> :
+                                        <Ionicons name="heart-outline" size={24} color="black" />}
+                                </Pressable>
                             </Pressable>
                             <Pressable style={({ pressed }) => (
                                 {

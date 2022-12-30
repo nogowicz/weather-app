@@ -6,21 +6,17 @@ import WeatherScreens from './screens/WeatherScreens';
 import SearchScreen from './screens/SearchScreen';
 import React from 'react';
 import { store } from './store/redux/store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import CityWeatherScreen from './screens/CityWeatherScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 type RootStackParamList = {
   WeatherScreens: undefined;
-  SearchScreen: undefined
+  SearchScreen: undefined;
+  CityWeatherScreen: undefined;
 };
 
 export default function App() {
-  AsyncStorage.getItem('favoriteCities', (error, result) => {
-    if (result === null) {
-      AsyncStorage.setItem('favoriteCities', JSON.stringify(['London']));
-    }
-  });
   return (
     <Provider store={store}>
       <StatusBar style="auto" />
@@ -40,6 +36,15 @@ export default function App() {
             options={{
               headerShown: false,
               animation: 'slide_from_right'
+            }}
+          />
+
+          <Stack.Screen
+            name="CityWeatherScreen"
+            component={CityWeatherScreen}
+            options={{
+              headerShown: false,
+              animation: 'slide_from_left'
             }}
           />
         </Stack.Navigator>
