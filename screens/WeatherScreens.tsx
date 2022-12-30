@@ -95,6 +95,7 @@ function WeatherScreens({ navigation }: Props) {
         } catch (error) {
             setError("Could not fetch weather data")
             console.log("Fetching data error: ", error)
+            setIsFetching(false)
         }
     }
 

@@ -60,12 +60,10 @@ function CityWeatherScreen() {
     );
     const route = useRoute<any>();
     const { cityName } = route.params;
-
     const favoriteCities = useSelector(state => selectFavoriteCities(state));
-    const [isFetching, setIsFetching] = useState(true);
+    const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState("");
     const [weatherData, setWeatherData] = useState<Weather>();
-
 
     useEffect(() => {
         getWeatherData(cityName);
@@ -78,7 +76,7 @@ function CityWeatherScreen() {
         const dateAsString = (new Date()).toDateString() + " " + ((hour < 10) ? "0" + hour : hour) + ":" + ((minutes < 10) ? "0" + minutes : minutes)
         setIsFetching(true);
         try {
-            console.log("Fetching data")
+            console.log("Fetching data: ", city)
             await fetchWeatherData(city).then((weather) => {
 
                 setWeatherData(
@@ -99,8 +97,8 @@ function CityWeatherScreen() {
 
             })
             setIsFetching(false);
-
         } catch (error) {
+            console.log(error)
             setError("Could not fetch weather data")
             console.log("Fetching data error: ", error)
         }
@@ -117,8 +115,6 @@ function CityWeatherScreen() {
             </View>
         )
     }
-
-
 
     function toggleHeart() {
         if (favoriteCities.find((obj) => obj === weatherData.city)) {
@@ -173,7 +169,7 @@ function CityWeatherScreen() {
             weatherIcon = "50d"
         }
 
-        if (weatherData.city != 'undefined') {
+        if (weatherData) {
             return (
                 <SafeAreaView style={[styles.container, { backgroundColor: background }]}>
                     <View style={[styles.upperContainer, { backgroundColor: background }]}>
