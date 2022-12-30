@@ -138,27 +138,6 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                     color='#1C212F'
                                 />
                             </Pressable>
-                            <Pressable style={({ pressed }) => (
-                                {
-                                    width: 32,
-                                    height: 32,
-                                    borderRadius: 32 / 2,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: pressed ? '#000' : null,
-                                    opacity: pressed ? 0.3 : null,
-                                    marginLeft: 10,
-                                }
-                            )}>
-                                <MaterialCommunityIcons
-                                    name="sort-variant"
-                                    size={24}
-                                    color='#1C212F'
-                                    style={{
-                                        transform: [{ scaleX: -1 }],
-                                    }}
-                                />
-                            </Pressable>
                         </View>
                     </View>
                     <View style={styles.infoContainer}>
@@ -246,35 +225,7 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                         <View style={{
                             flexDirection: 'row',
                         }}>
-                            <Pressable style={({ pressed }) => (
-                                {
-                                    width: 32,
-                                    height: 32,
-                                    borderRadius: 32 / 2,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: pressed ? '#000' : null,
-                                    opacity: pressed ? 0.3 : null,
-                                }
-                            )}>
-                                <Pressable
-                                    style={({ pressed }) => (
-                                        {
-                                            width: 32,
-                                            height: 32,
-                                            borderRadius: 32 / 2,
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            backgroundColor: pressed ? '#000' : null,
-                                            opacity: pressed ? 0.3 : null,
-                                        }
-                                    )}
-                                    onPress={toggleHeart}
-                                >
-                                    {favoriteCities.find((obj) => obj === city) ? <Ionicons name="heart" size={24} color="black" /> :
-                                        <Ionicons name="heart-outline" size={24} color="black" />}
-                                </Pressable>
-                            </Pressable>
+
                             <Pressable style={({ pressed }) => (
                                 {
                                     width: 32,
@@ -297,27 +248,7 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                     color='#1C212F'
                                 />
                             </Pressable>
-                            <Pressable style={({ pressed }) => (
-                                {
-                                    width: 32,
-                                    height: 32,
-                                    borderRadius: 32 / 2,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: pressed ? '#000' : null,
-                                    opacity: pressed ? 0.3 : null,
-                                    marginLeft: 10,
-                                }
-                            )}>
-                                <MaterialCommunityIcons
-                                    name="sort-variant"
-                                    size={24}
-                                    color='#1C212F'
-                                    style={{
-                                        transform: [{ scaleX: -1 }],
-                                    }}
-                                />
-                            </Pressable>
+
                         </View>
                     </View>
                     <View style={styles.infoContainer}>

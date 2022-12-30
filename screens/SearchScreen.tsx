@@ -54,7 +54,7 @@ function SearchScreen() {
                                 opacity: pressed ? 0.3 : null,
                             }
                         )}
-                        onPress={() => navigation.goBack()}
+                        onPress={() => navigation.navigate('WeatherScreens')}
                     >
                         <Ionicons
                             name="arrow-back"

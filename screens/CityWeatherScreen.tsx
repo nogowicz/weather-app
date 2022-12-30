@@ -98,9 +98,9 @@ function CityWeatherScreen() {
             })
             setIsFetching(false);
         } catch (error) {
-            console.log(error)
             setError("Could not fetch weather data")
             console.log("Fetching data error: ", error)
+            navigation.goBack();
         }
     }
     let [fontsLoaded] = useFonts({
@@ -248,27 +248,7 @@ function CityWeatherScreen() {
                                         color='#1C212F'
                                     />
                                 </Pressable>
-                                <Pressable style={({ pressed }) => (
-                                    {
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: 32 / 2,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        backgroundColor: pressed ? '#000' : null,
-                                        opacity: pressed ? 0.3 : null,
-                                        marginLeft: 10,
-                                    }
-                                )}>
-                                    <MaterialCommunityIcons
-                                        name="sort-variant"
-                                        size={24}
-                                        color='#1C212F'
-                                        style={{
-                                            transform: [{ scaleX: -1 }],
-                                        }}
-                                    />
-                                </Pressable>
+
                             </View>
                         </View>
                         <View style={styles.infoContainer}>
@@ -356,23 +336,7 @@ function CityWeatherScreen() {
                             <View style={{
                                 flexDirection: 'row',
                             }}>
-                                <Pressable style={({ pressed }) => (
-                                    {
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: 32 / 2,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        backgroundColor: pressed ? '#000' : null,
-                                        opacity: pressed ? 0.3 : null,
-                                    }
-                                )}>
-                                    <Ionicons
-                                        name="search"
-                                        size={24}
-                                        color="black"
-                                    />
-                                </Pressable>
+
                                 <Pressable style={({ pressed }) => (
                                     {
                                         width: 32,
@@ -395,27 +359,7 @@ function CityWeatherScreen() {
                                         color='#1C212F'
                                     />
                                 </Pressable>
-                                <Pressable style={({ pressed }) => (
-                                    {
-                                        width: 32,
-                                        height: 32,
-                                        borderRadius: 32 / 2,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        backgroundColor: pressed ? '#000' : null,
-                                        opacity: pressed ? 0.3 : null,
-                                        marginLeft: 10,
-                                    }
-                                )}>
-                                    <MaterialCommunityIcons
-                                        name="sort-variant"
-                                        size={24}
-                                        color='#1C212F'
-                                        style={{
-                                            transform: [{ scaleX: -1 }],
-                                        }}
-                                    />
-                                </Pressable>
+
                             </View>
                         </View>
                         <View style={styles.infoContainer}>

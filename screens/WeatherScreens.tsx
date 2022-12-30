@@ -53,6 +53,7 @@ function WeatherScreens({ navigation }: Props) {
     const [weatherData, setWeatherData] = useState<Weather>();
     const [weatherArray, setWeatherArray] = useState([]);
     const [clearArray, setClearArray] = useState(false);
+    const scrollViewRef = useRef(null);
     let img = require('../assets/problem.png');
     let background = '#DFECFD'
     let weatherIcon: string = '01d.png'
@@ -103,6 +104,8 @@ function WeatherScreens({ navigation }: Props) {
         dispatch(loadFavoriteCities())
         console.log(favoriteCities)
     }, []);
+
+
 
 
     useEffect(() => {
@@ -186,6 +189,7 @@ function WeatherScreens({ navigation }: Props) {
                     )}
                     scrollEventThrottle={1}
                 >
+
                     {weatherArray.map((weather, index) => {
                         if (weatherArray) {
                             if (weather.description === 'clear sky' || weather.name === 'Clear') {
