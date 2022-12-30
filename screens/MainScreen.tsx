@@ -87,13 +87,13 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                             <Text style={{
                                 fontFamily: "Lato-Bold900",
                                 fontSize: 20,
-                                color: '#1C212F'
+                                color: '#131235'
                             }}>{city}</Text>
                             <Text style={{
                                 fontFamily: "Lato-Regular400",
                                 fontSize: 15,
                                 marginTop: 5,
-                                color: '#1C212F'
+                                color: '#131235'
                             }}>{dateTime}</Text>
                         </View>
                         <View style={{
@@ -135,7 +135,7 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                 <AntDesign
                                     name="plus"
                                     size={24}
-                                    color='#1C212F'
+                                    color='#131235'
                                 />
                             </Pressable>
                         </View>
@@ -150,7 +150,7 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                 fontFamily: "Lato-Bold700",
                                 fontSize: 17,
                                 marginTop: 5,
-                                color: '#1C212F'
+                                color: '#131235'
                             }}>{weatherType}</Text>
                         </View>
                         <View>
@@ -158,7 +158,8 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                 fontFamily: "Lato-Regular400",
                                 fontSize: 80,
                                 marginTop: 5,
-                                color: '#1C212F'
+                                color: '#131235',
+                                fontWeight: 'bold'
                             }}>{temperature}</Text>
                         </View>
                     </View>
@@ -184,7 +185,7 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                         <Text style={{
                             fontFamily: "Lato-Bold900",
                             fontSize: 20,
-                            color: '#1C212F'
+                            color: '#131235'
                         }}>Weather now</Text>
 
                         <View style={styles.detailsContainer}>
@@ -245,7 +246,7 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                                 <AntDesign
                                     name="plus"
                                     size={24}
-                                    color='#1C212F'
+                                    color='#131235'
                                 />
                             </Pressable>
 
@@ -285,7 +286,7 @@ function MainScreen({ image, city, dateTime, temperature, weatherType, wind, vis
                         <Text style={{
                             fontFamily: "Lato-Bold900",
                             fontSize: 20,
-                            color: '#1C212F'
+                            color: '#131235'
                         }}>Weather now</Text>
 
                         <View style={styles.detailsContainer}>

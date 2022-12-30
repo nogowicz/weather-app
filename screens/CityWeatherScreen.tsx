@@ -197,13 +197,13 @@ function CityWeatherScreen() {
                                 <Text style={{
                                     fontFamily: "Lato-Bold900",
                                     fontSize: 20,
-                                    color: '#1C212F'
+                                    color: '##131235',
                                 }}>{weatherData.city}</Text>
                                 <Text style={{
                                     fontFamily: "Lato-Regular400",
                                     fontSize: 15,
                                     marginTop: 5,
-                                    color: '#1C212F'
+                                    color: '##131235'
                                 }}>{weatherData.date}</Text>
                             </View>
                             <View style={{
@@ -217,14 +217,14 @@ function CityWeatherScreen() {
                                             borderRadius: 32 / 2,
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                            backgroundColor: pressed ? '#000' : null,
+                                            backgroundColor: pressed ? '##131235' : null,
                                             opacity: pressed ? 0.3 : null,
                                         }
                                     )}
                                     onPress={toggleHeart}
                                 >
-                                    {favoriteCities.find((obj) => obj === weatherData.city) ? <Ionicons name="heart" size={24} color="black" /> :
-                                        <Ionicons name="heart-outline" size={24} color="black" />}
+                                    {favoriteCities.find((obj) => obj === weatherData.city) ? <Ionicons name="heart" size={24} color="##131235" /> :
+                                        <Ionicons name="heart-outline" size={24} color="##131235" />}
                                 </Pressable>
                                 <Pressable style={({ pressed }) => (
                                     {
@@ -233,7 +233,7 @@ function CityWeatherScreen() {
                                         borderRadius: 32 / 2,
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        backgroundColor: pressed ? '#000' : null,
+                                        backgroundColor: pressed ? '##131235' : null,
                                         opacity: pressed ? 0.3 : null,
                                         marginLeft: 10,
                                     }
@@ -245,7 +245,7 @@ function CityWeatherScreen() {
                                     <AntDesign
                                         name="plus"
                                         size={24}
-                                        color='#1C212F'
+                                        color='##131235'
                                     />
                                 </Pressable>
 
@@ -259,17 +259,18 @@ function CityWeatherScreen() {
                                 />
                                 <Text style={{
                                     fontFamily: "Lato-Bold700",
-                                    fontSize: 17,
-                                    marginTop: 5,
-                                    color: '#1C212F'
+                                    fontSize: 20,
+                                    fontWeight: 'bold',
+                                    color: '##131235'
                                 }}>{weatherData.name}</Text>
                             </View>
                             <View>
                                 <Text style={{
                                     fontFamily: "Lato-Regular400",
                                     fontSize: 80,
+                                    fontWeight: 'bold',
                                     marginTop: 5,
-                                    color: '#1C212F'
+                                    color: '##131235'
                                 }}>{weatherData.temp}</Text>
                             </View>
                         </View>
@@ -295,7 +296,7 @@ function CityWeatherScreen() {
                             <Text style={{
                                 fontFamily: "Lato-Bold900",
                                 fontSize: 20,
-                                color: '#1C212F'
+                                color: '##131235',
                             }}>Weather now</Text>
 
                             <View style={styles.detailsContainer}>
@@ -356,7 +357,7 @@ function CityWeatherScreen() {
                                     <AntDesign
                                         name="plus"
                                         size={24}
-                                        color='#1C212F'
+                                        color='#131235'
                                     />
                                 </Pressable>
 
@@ -396,7 +397,7 @@ function CityWeatherScreen() {
                             <Text style={{
                                 fontFamily: "Lato-Bold900",
                                 fontSize: 20,
-                                color: '#1C212F'
+                                color: '##131235'
                             }}>Weather now</Text>
 
                             <View style={styles.detailsContainer}>

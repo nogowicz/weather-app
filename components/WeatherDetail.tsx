@@ -58,7 +58,7 @@ function WeatherDetail({ children, title, detail }: Props) {
                     <Text style={{
                         fontFamily: "Lato-Bold900",
                         fontSize: 17,
-                        color: '#1C212F'
+                        color: '#131235'
                     }}>{detail}</Text>
                 </View>
             </View>
